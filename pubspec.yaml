@@ -1,4 +1,4 @@
-name: app_router_dart
+name: app_router
 version: 0.1.0
 author: pjv <ezelspinguin@gmail.com>
 description: Router for Web Components.  Mostly auto-generated Dart translation of app-router that is compatible with Polymer.dart. Original author is Erik Ringsmuth <erik.ringsmuth@gmail.com>.
