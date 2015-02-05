@@ -1,0 +1,11 @@
+
+{
+"private": true,
+"name": "app-router-dart",
+"dependencies": {
+"app-router": "~2.3.2"
+},
+"devDependencies": {
+"polymer": "~0.5.2"
+}
+}

@@ -1,0 +1,33 @@
+<!--
+    App Router - dart
+    Copyright (c) 2015 pjv
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<link rel="import" href="../../packages/polymer/polymer.html">
+<link rel="import" href="../../packages/core_elements/core_ajax_dart.html">
+<link rel="import" href="../../packages/core_elements/core_animated_pages.html">
+
+<polymer-element name="app-router" attributes="init mode trailingSlash shadow typecast core_animated_pages transitions bindRouter">
+<template>
+<link href="app_router.css" rel="stylesheet">
+<content></content>
+
+    <core-ajax-dart id="ajax"
+        handleAs="text">
+    </core-ajax-dart>
+
+</template> <script type="application/dart" src="app_router.dart"></script> </polymer-element>
+
