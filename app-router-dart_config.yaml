@@ -1,3 +1,0 @@
-# Configuration for running tool/generate_dart_api.dart
-files_to_generate:
-- app-router/app-router.html
