@@ -2,7 +2,7 @@ App Router
 ==========
 
 Router for Web Components.  
-Mostly auto-generated Dart translation of app-router that is compatible with Polymer.dart.
+Dart translation of app-router that is compatible with Polymer.dart.
 
 This is still EXPERIMENTAL and untested.
 
