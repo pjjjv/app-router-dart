@@ -20,7 +20,7 @@ import 'package:polymer/polymer.dart';
 import 'dart:html';
 import 'dart:async';
 import 'package:core_elements/core_animated_pages.dart';
-import 'package:app_router_dart/app_route.dart';
+import 'package:app_router/app_route.dart';
 import 'package:template_binding/template_binding.dart';
 import 'package:core_elements/core_ajax_dart.dart';
 
