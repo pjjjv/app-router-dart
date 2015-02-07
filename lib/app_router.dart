@@ -201,7 +201,8 @@ class RouteUri {
   bool isHashPath = false;
 
   String get hash {
-    return uri.fragment;
+    if(uri.fragment.length == 0) return '';
+    return '#'+uri.fragment;
   }
 
   String get path {
@@ -209,11 +210,32 @@ class RouteUri {
   }
 
   String get search {
-    return uri.query;
+    if(uri.query.length == 0) return '';
+    return '?'+uri.query;
   }
 
   toString() => uri.toString()+" isHashPath: $isHashPath";
 
+  toMap() {
+    Map map = new Map();
+    map['path'] = this.path;
+    map['hash'] = this.hash;
+    map['search'] = this.search;
+    map['isHashPath'] = this.isHashPath;
+    return map;
+  }
+
+  Uri replacePathAndQuery(Uri uri, String pathAndQuery){
+    int index = pathAndQuery.indexOf("?");
+    String path = pathAndQuery;
+    String query = "";
+    if(index != -1){
+      path = pathAndQuery.substring(0, index);
+      query = pathAndQuery.substring(index+1);
+    }
+    uri = uri.replace(path: path, query: query);
+    return uri;
+  }
 
   // parseUrl(location, mode) - Augment the native URL() constructor to get info about hash paths
   //
@@ -235,29 +257,20 @@ class RouteUri {
       // auto or hash
 
       // check for a hash path
-      if (uri.fragment.startsWith('#/')) {
+      if (uri.fragment.startsWith('/')) {//#/
         // hash path
         isHashPath = true;
-        uri = uri.replace(path: uri.fragment.substring(1));
-      } else if (uri.fragment.startsWith('#!/')) {
+        uri = replacePathAndQuery(uri, uri.fragment);
+      } else if (uri.fragment.startsWith('!/')) {//#!/
         // hashbang path
         isHashPath = true;
-        uri = uri.replace(path: uri.fragment.substring(2));
+        uri = replacePathAndQuery(uri, uri.fragment.substring(1));
       } else if (isHashPath) {
         // still use the hash if mode="hash"
         if (uri.fragment.length == 0) {
           uri = uri.replace(path: '/');
         } else {
-          String pathAndQuery = uri.fragment.substring(1);
-          int index = pathAndQuery.indexOf("?");
-          String path = pathAndQuery;
-          String query = "";
-          if(index != -1){
-            path = pathAndQuery.substring(0, index);
-            query = pathAndQuery.substring(index+1);
-          }
-
-          uri = uri.replace(path: path, query: query);
+          uri = replacePathAndQuery(uri, uri.fragment);
         }
       }
 
@@ -364,7 +377,8 @@ void activateRoute(AppRouter router, AppRoute route, RouteUri url) {
   // Import and activate a custom element or template
 void importAndActivate(AppRouter router, String importUri, AppRoute route, RouteUri url, Map eventDetail){
   Element contentHtml;
-  pageLoadedCallback(Event e, AppRouter router, Element contentHtml, String importUri, AppRoute route, RouteUri url, Map eventDetail) {
+
+  pageLoadedCallback(CustomEvent e, AppRouter router, Element contentHtml, String importUri, AppRoute route, RouteUri url, Map eventDetail) {
     final String content = e.detail['response'];
 
     if (route.active) {
@@ -385,7 +399,7 @@ void importAndActivate(AppRouter router, String importUri, AppRoute route, Route
     importedURIs[importUri] = true;
     //route.addEventListener('lazy-loaded', pageLoadedCallback);
     router._ajax.url = route.imp;
-    router._ajax.onCoreResponse.first.then((Event e) => pageLoadedCallback(e, router, contentHtml, importUri, route, url, eventDetail));
+    router._ajax.onCoreResponse.first.then((CustomEvent e) => pageLoadedCallback(e, router, contentHtml, importUri, route, url, eventDetail));
     router._ajax.onError.first.then(onError);
     router._ajax.go();
   } else {
@@ -623,7 +637,7 @@ Map routeArguments(String routePath, String urlPath, String search, bool isRegEx
 
   List<String> queryParameters = [];
   if (search.length>0){
-    queryParameters = search.substring(0).split('&');
+    queryParameters = search.substring(1).split('&');
   }
   // split() on an empty string has a strange behavior of returning [''] instead of []
   if (queryParameters.length == 1 && queryParameters[0] == '') {
