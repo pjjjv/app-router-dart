@@ -117,7 +117,7 @@ class AppRouter extends PolymerElement {
     }
 
     // listen for URL change events
-    stateChangeHandler = (Event e) => stateChange(this); //stateChange.bind(null, this); //TODO
+    stateChangeHandler = (Event e) => stateChange(this);
     window.addEventListener('popstate', stateChangeHandler, false);
     if (isIE) {
       // IE bug. A hashchange is supposed to trigger a popstate event, making popstate the only event you
@@ -144,7 +144,7 @@ class AppRouter extends PolymerElement {
   // options = {
   //   replace: true
   // }
-  void go(String path, Map options) {
+  void go(String path, [Map options = null]) {
     if (mode != "pushstate") {
       // mode == auto or hash
       path = '#' + path;
@@ -437,27 +437,35 @@ void activateImport(AppRouter router, Element contentHtml, String importUri, App
 void activateCustomElement(AppRouter router, String elementName, AppRoute route, RouteUri url, Map eventDetail) {
   Element customElement = document.createElement(elementName);
   Map<String, String> model = createModel(router, route, url, eventDetail);
-  customElement.attributes.addAll(model);//TODO
+  customElement.attributes.addAll(model);//TODO: router (from bindRouter) is not a String, so bindRouter is not working yet.
+  //for (String item in model.keys){
+  //customElement.bindProperty(#router, router);
+  //}
+  //for (String item in model.keys){
+  //customElement.dataset = model;
+  //}
   activeElement(router, customElement, url, eventDetail);
 }
 
   // Create an instance of the template
 void activeTemplate(AppRouter router, TemplateElement template, AppRoute route, RouteUri url, Map eventDetail) {
   DocumentFragment templateInstance;
-  /*if ('createInstance' in template) {*/ //TODO
-    // template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
-    // https://github.com/erikringsmuth/app-router/issues/19
-    //Map model = createModel(router, route, url, eventDetail);
-    //templateInstance = (template as AutoBindingElement).createInstance(model: model);
-    //templateInstance = templateBindFallback(template).createInstance(model: model);
-    //template.model = toObservable(model);//
-    //templateBind(template).model = toObservable(model);
-    //templateInstance = template;
-  /*} else {
-    templateInstance = document.importNode(template.content, true);
-  }*/
+  //TODO: inline template and its binding seems not to be working always yet, for example when app-router itself is contained in a (auto-binding) template.
 
-  templateInstance = document.importNode(template.content, true);
+  Map<String, String> model = createModel(router, route, url, eventDetail);
+  if (model != {}) {//Has to be auto-binding template then
+    //// template.createInstance(model) is a Polymer method that binds a model to a template and also fixes
+    //// https://github.com/erikringsmuth/app-router/issues/19
+    //print("Using auto-binding template in app-router.");
+    templateInstance = (template as AutoBindingElement).createInstance(model);//TODO: Not working yet
+    ////templateInstance = templateBindFallback(template).createInstance(model: model);
+    ////template.model = toObservable(model);//
+    ////templateBind(template).model = toObservable(model);
+    ////templateInstance = template;
+  } else {
+    templateInstance = document.importNode(template.content, true);
+  }
+
   activeElement(router, templateInstance, url, eventDetail);
 }
 
@@ -466,6 +474,7 @@ Map createModel(AppRouter router, AppRoute route, RouteUri url, Map eventDetail)
   Map model = routeArguments(route.getAttribute('path'), url.path, url.search, route.regex, router.typecast == 'auto');
   if (route.bindRouter != null || router.bindRouter != null) {
     model['router'] = router;
+    print("router.templateInstance.model: ${router.templateInstance.model}");
   }
   eventDetail['model'] = model;
   router.fireEvent('before-data-binding', eventDetail, router);
