@@ -150,9 +150,9 @@ class AppRouter extends PolymerElement {
       path = '#' + path;
     }
     if (options != null && options['replace'] == true) {
-      window.history.replaceState(null, null, path);
+      window.history.replaceState(null, "", path);
     } else {
-      window.history.pushState(null, null, path);
+      window.history.pushState(null, "", path);
     }
 
     // dispatch a popstate event
