@@ -575,7 +575,7 @@ bool testRoute(String routePath, String urlPath, String trailingSlashOption, boo
       urlPath = urlPath.substring(0, urlPath.length-1);//TODO
     }
     if(routePath.endsWith('/') && !isRegExp) {
-      routePath = routePath.substring(0, urlPath.length-1);
+      routePath = routePath.substring(0, routePath.length-1);
     }
   }
 
