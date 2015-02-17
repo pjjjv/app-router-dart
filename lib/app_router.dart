@@ -92,11 +92,15 @@ class AppRouter extends PolymerElement {
       // </app-router>
       //createShadowRoot();
 
-      Element content = shadowRoot.querySelector("content");
+      //Element content = shadowRoot.querySelector("content");
+      List<AppRoute> appRoutes = querySelectorAll("app-route");
 
       coreAnimatedPages = (new Element.tag('core-animated-pages') as CoreAnimatedPages);
       //coreAnimatedPages = (document.createElement('core-animated-pages') as CoreAnimatedPages);
-      coreAnimatedPages.append(content);
+      //coreAnimatedPages.append(content);
+      for (AppRoute ele in appRoutes){
+        coreAnimatedPages.append(ele);
+      }
 
       // don't know why it needs to be static, but absolute doesn't display the page
       coreAnimatedPages.style.position = 'static';
@@ -315,7 +319,13 @@ void stateChange(AppRouter router) {
   }
 
   // find the first matching route
-  for (Element ele in router.children){
+  List<Element> eles;
+  if(router.core_animated_pages){
+    eles = router.coreAnimatedPages.children;
+  } else {
+    eles = router.children;
+  }
+  for (Element ele in eles){
     if (ele.tagName == 'APP-ROUTE'){
       AppRoute route = ele;
       if (testRoute(route.path, url.path, router.trailingSlash, route.regex)) {
